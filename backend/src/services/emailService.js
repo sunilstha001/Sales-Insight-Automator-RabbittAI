@@ -1,43 +1,32 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
 class EmailService {
   constructor() {
-    // USE PORT 465 WITH SSL - THIS WORKS ON RENDER
-    this.transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true, // true for 465
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      },
-      // Add timeout but keep it simple
-      connectionTimeout: 30000,
-      greetingTimeout: 30000,
-      socketTimeout: 30000,
-    });
+    // Initialize Resend with API key
+    this.resend = new Resend(process.env.RESEND_API_KEY);
+    console.log('✅ Resend initialized');
   }
 
   async sendSummary(email, summary, fileName) {
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: `Sales Insight Summary - ${fileName}`,
-      html: this.generateEmailTemplate(summary, fileName)
-    };
-
     try {
-      console.log('📧 Sending email via port 465 to:', email);
+      console.log('📧 Sending via Resend API to:', email);
       
-      const info = await this.transporter.sendMail(mailOptions);
-      console.log('✅ Email sent successfully:', info.messageId);
-      return { success: true };
-    } catch (error) {
-      console.error('❌ Email error:', {
-        message: error.message,
-        code: error.code,
-        command: error.command
+      const { data, error } = await this.resend.emails.send({
+        from: 'onboarding@resend.dev', // Resend's test domain - works immediately!
+        to: [email],
+        subject: `Sales Insight Summary - ${fileName}`,
+        html: this.generateEmailTemplate(summary, fileName)
       });
+
+      if (error) {
+        console.error('❌ Resend error:', error);
+        throw error;
+      }
+
+      console.log('✅ Email sent successfully via Resend!');
+      return { success: true, data };
+    } catch (error) {
+      console.error('❌ Email error:', error);
       throw new Error(`Failed to send email: ${error.message}`);
     }
   }
