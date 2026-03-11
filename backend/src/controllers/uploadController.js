@@ -31,27 +31,31 @@ class UploadController {
       const narrative = await aiService.generateNarrative(data, stats);
       console.log('✅ AI summary generated');
       
-      // Send email
-      console.log('📧 Sending email...');
-      await emailService.sendSummary(email, narrative, file.originalname);
-      console.log('✅ Email sent');
-
+      // ✅ SEND SUMMARY TO FRONTEND IMMEDIATELY
       res.status(200).json({
         success: true,
-        message: 'Summary generated and sent successfully',
+        message: 'Summary generated successfully',
         data: {
           summary: {
             totalRevenue: stats.totalRevenue,
             totalUnits: stats.totalUnits,
-            totalOrders: stats.totalOrders
+            totalOrders: stats.totalOrders,
+            avgOrderValue: stats.avgOrderValue
           },
           narrative
         }
       });
+      
+      // ✅ THEN TRY TO SEND EMAIL IN BACKGROUND (non-blocking)
+      console.log('📧 Sending email in background...');
+      emailService.sendSummary(email, narrative, file.originalname)
+        .then(() => console.log('✅ Email sent successfully'))
+        .catch(error => console.error('❌ Email failed (but summary already shown):', error.message));
+      
     } catch (error) {
       console.error('❌ Upload error:', error);
       
-      // Send appropriate error response
+      // Send error response
       res.status(500).json({
         success: false,
         error: { 
