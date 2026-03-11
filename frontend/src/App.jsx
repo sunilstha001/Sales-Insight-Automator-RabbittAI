@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import FileUpload from '../components/FileUpload'
-import EmailInput from '../components/EmailInput'
-import StatusMessage from '../components/StatusMessage'
-import LoadingSpinner from '../components/LoadingSpinner'
+import FileUpload from './components/FileUpload'      // ✅ Fixed
+import EmailInput from './components/EmailInput'      // ✅ Fixed
+import StatusMessage from './components/StatusMessage' // ✅ Fixed
+import LoadingSpinner from './components/LoadingSpinner' // ✅ Fixed
 import { Sparkles, Shield, Github, TrendingUp, Zap, MailCheck, Download, Copy, Check } from 'lucide-react'
 import axios from 'axios'
 import { Toaster, toast } from 'react-hot-toast'
