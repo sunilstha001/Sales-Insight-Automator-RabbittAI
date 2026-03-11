@@ -16,61 +16,78 @@ function App() {
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    if (!file) {
-      toast.error('Please select a file to upload')
-      return
-    }
-
-    if (!email) {
-      toast.error('Please enter your email address')
-      return
-    }
-
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('email', email)
-
-    setLoading(true)
-    setStatus({ type: 'loading', message: 'Processing your file...' })
-
-    try {
-      const response = await axios.post(`${API_URL}/api/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        timeout: 30000
-      })
-
-      if (response.data.success) {
-        setStatus({ 
-          type: 'success', 
-          message: '✅ Summary generated and sent successfully! Check your inbox.' 
-        })
-        toast.success('Email sent successfully!')
-        setFile(null)
-        setEmail('')
-      }
-    } catch (error) {
-      console.error('Upload error:', error)
-      
-      let errorMessage = 'Something went wrong. Please try again.'
-      
-      if (error.code === 'ECONNABORTED') {
-        errorMessage = 'Request timeout. Please try again.'
-      } else if (error.response) {
-        errorMessage = error.response.data?.error?.message || errorMessage
-      } else if (error.request) {
-        errorMessage = 'Cannot connect to server. Please check if backend is running.'
-      }
-      
-      setStatus({ type: 'error', message: `❌ ${errorMessage}` })
-      toast.error(errorMessage)
-    } finally {
-      setLoading(false)
-    }
+  e.preventDefault()
+  
+  if (!file) {
+    toast.error('Please select a file to upload')
+    return
   }
+
+  if (!email) {
+    toast.error('Please enter your email address')
+    return
+  }
+
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('email', email)
+
+  setLoading(true)
+  setStatus({ type: 'loading', message: 'Processing your file...' })
+
+  try {
+    console.log('📤 Sending to:', API_URL)
+    
+    const response = await axios({
+      method: 'post',
+      url: `${API_URL}/api/upload`,
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      timeout: 60000, // 60 seconds
+      withCredentials: false
+    })
+
+    console.log('✅ Response:', response.data)
+
+    if (response.data.success) {
+      setStatus({ 
+        type: 'success', 
+        message: '✅ Summary generated and sent successfully! Check your inbox.' 
+      })
+      toast.success('Email sent successfully!')
+      setFile(null)
+      setEmail('')
+    }
+  } catch (error) {
+    console.error('❌ Upload error details:', {
+      message: error.message,
+      code: error.code,
+      response: error.response?.data,
+      status: error.response?.status
+    })
+    
+    let errorMessage = 'Something went wrong. Please try again.'
+    
+    if (error.code === 'ECONNABORTED') {
+      errorMessage = 'Request timeout. The server is taking too long to respond.'
+    } else if (error.response) {
+      // Server responded with error
+      errorMessage = error.response.data?.error?.message || `Server error: ${error.response.status}`
+    } else if (error.request) {
+      // Request made but no response
+      errorMessage = 'Cannot connect to server. Please check if backend is running.'
+    } else {
+      errorMessage = error.message
+    }
+    
+    setStatus({ type: 'error', message: `❌ ${errorMessage}` })
+    toast.error(errorMessage)
+  } finally {
+    setLoading(false)
+  }
+}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
