@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sales Insight Automator - Transform sales data into AI-powered insights" />
+    <title>Rabbitt AI - Sales Insight Automator</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add custom animations -->
+    <style>
+      @keyframes gradient {
+        0%, 100% {
+          background-size: 200% 200%;
+          background-position: left center;
+        }
+        50% {
+          background-size: 200% 200%;
+          background-position: right center;
+        }
+      }
+      .animate-gradient {
+        animation: gradient 8s linear infinite;
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches: [ main, master ]
+  push:
+    branches: [ main, master ]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: |
+          backend/package-lock.json
+          frontend/package-lock.json
+    
+    - name: Install Backend Dependencies
+      working-directory: ./backend
+      run: |
+        npm ci || npm install
+    
+    - name: Lint Backend
+      working-directory: ./backend
+      continue-on-error: true
+      run: |
+        if grep -q "\"lint\"" package.json; then
+          npm run lint
+        else
+          echo "No linter configured - skipping"
+        fi
+    
+    - name: Install Frontend Dependencies
+      working-directory: ./frontend
+      run: |
+        npm ci || npm install
+    
+    - name: Build Frontend
+      working-directory: ./frontend
+      run: npm run build
+    
+    - name: Test Docker Build
+      run: |
+        docker-compose -f docker-compose.yml build
