@@ -33,7 +33,7 @@ function App() {
   formData.append('email', email)
 
   setLoading(true)
-  setStatus({ type: 'loading', message: 'Processing your file...' })
+  setStatus({ type: 'loading', message: 'Processing your file... (This may take up to 2 minutes as the server wakes up)' })
 
   try {
     console.log('📤 Sending to:', API_URL)
@@ -45,7 +45,7 @@ function App() {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-      timeout: 60000, // 60 seconds
+      timeout: 120000, // 60 seconds
       withCredentials: false
     })
 
