@@ -2,13 +2,19 @@ const nodemailer = require('nodemailer');
 
 class EmailService {
   constructor() {
-    // KEEP IT SIMPLE - this works on Render
+    // USE PORT 465 WITH SSL - THIS WORKS ON RENDER
     this.transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // true for 465
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-      }
+      },
+      // Add timeout but keep it simple
+      connectionTimeout: 30000,
+      greetingTimeout: 30000,
+      socketTimeout: 30000,
     });
   }
 
@@ -21,13 +27,17 @@ class EmailService {
     };
 
     try {
-      console.log('📧 Sending email to:', email);
+      console.log('📧 Sending email via port 465 to:', email);
       
       const info = await this.transporter.sendMail(mailOptions);
-      console.log('✅ Email sent:', info.messageId);
+      console.log('✅ Email sent successfully:', info.messageId);
       return { success: true };
     } catch (error) {
-      console.error('❌ Email error:', error.message);
+      console.error('❌ Email error:', {
+        message: error.message,
+        code: error.code,
+        command: error.command
+      });
       throw new Error(`Failed to send email: ${error.message}`);
     }
   }
