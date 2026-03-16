@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import FileUpload from './components/FileUpload'      // ✅ Fixed
-import EmailInput from './components/EmailInput'      // ✅ Fixed
-import StatusMessage from './components/StatusMessage' // ✅ Fixed
-import LoadingSpinner from './components/LoadingSpinner' // ✅ Fixed
+import FileUpload from './components/FileUpload'      
+import EmailInput from './components/EmailInput'      
+import StatusMessage from './components/StatusMessage' 
+import LoadingSpinner from './components/LoadingSpinner' 
 import { Sparkles, Shield, Github, TrendingUp, Zap, MailCheck, Download, Copy, Check } from 'lucide-react'
 import axios from 'axios'
 import { Toaster, toast } from 'react-hot-toast'
@@ -52,7 +52,7 @@ function Home() {
         withCredentials: false
       })
 
-      console.log('✅ Response:', response.data)
+      console.log(' Response:', response.data)
 
       if (response.data.success) {
         // Store the summary
@@ -64,14 +64,14 @@ function Home() {
         
         setStatus({ 
           type: 'success', 
-          message: '✅ Summary generated successfully! Check your inbox and see below.' 
+          message: ' Summary generated successfully! Check your inbox and see below.' 
         })
         toast.success('Summary generated successfully!')
         setFile(null)
         setEmail('')
       }
     } catch (error) {
-      console.error('❌ Upload error:', error)
+      console.error(' Upload error:', error)
       
       let errorMessage = 'Something went wrong. Please try again.'
       
@@ -85,7 +85,7 @@ function Home() {
         errorMessage = error.message
       }
       
-      setStatus({ type: 'error', message: `❌ ${errorMessage}` })
+      setStatus({ type: 'error', message: ` ${errorMessage}` })
       toast.error(errorMessage)
     } finally {
       setLoading(false)
@@ -220,39 +220,6 @@ function Home() {
           </p>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-            <div className="p-3 bg-purple-100 rounded-xl w-fit mb-6">
-              <TrendingUp className="h-8 w-8 text-purple-600" />
-            </div>
-            <h3 className="font-bold text-xl mb-3">Smart Analysis</h3>
-            <p className="text-gray-600 leading-relaxed">
-              AI-powered insights that identify trends, patterns, and key opportunities.
-            </p>
-          </div>
-          
-          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-            <div className="p-3 bg-pink-100 rounded-xl w-fit mb-6">
-              <Zap className="h-8 w-8 text-pink-600" />
-            </div>
-            <h3 className="font-bold text-xl mb-3">Instant Delivery</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Get professional summaries sent directly to your inbox within seconds.
-            </p>
-          </div>
-          
-          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-            <div className="p-3 bg-red-100 rounded-xl w-fit mb-6">
-              <MailCheck className="h-8 w-8 text-red-500" />
-            </div>
-            <h3 className="font-bold text-xl mb-3">Executive Ready</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Well-formatted summaries ready to present to leadership teams.
-            </p>
-          </div>
-        </div>
-
         {/* Upload Form */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-gray-100">
           <div className="mb-8">
@@ -286,7 +253,7 @@ function Home() {
           {status.message && <StatusMessage status={status} />}
         </div>
 
-        {/* ✅ SUMMARY DISPLAY SECTION */}
+        {/*  SUMMARY DISPLAY SECTION */}
         {summary && (
           <div className="mt-12 bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-gray-100">
             <div className="flex justify-between items-center mb-6">
