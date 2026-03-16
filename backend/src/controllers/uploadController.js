@@ -8,8 +8,8 @@ class UploadController {
       const { email } = req.body;
       const file = req.file;
 
-      console.log('📁 File received:', file?.originalname);
-      console.log('📧 Email:', email);
+      console.log(' File received:', file?.originalname);
+      console.log(' Email:', email);
 
       if (!file) {
         return res.status(400).json({
@@ -20,18 +20,18 @@ class UploadController {
 
       // Process the file
       const data = await fileProcessor.processFile(file);
-      console.log(`✅ Processed ${data.length} records`);
+      console.log(` Processed ${data.length} records`);
       
       // Generate statistics
       const stats = fileProcessor.generateStats(data);
-      console.log('📊 Stats generated:', stats.totalRevenue);
+      console.log(' Stats generated:', stats.totalRevenue);
       
       // Generate AI narrative
-      console.log('🤖 Generating AI summary...');
+      console.log(' Generating AI summary...');
       const narrative = await aiService.generateNarrative(data, stats);
-      console.log('✅ AI summary generated');
+      console.log(' AI summary generated');
       
-      // ✅ SEND SUMMARY TO FRONTEND IMMEDIATELY
+      //  SEND SUMMARY TO FRONTEND IMMEDIATELY
       res.status(200).json({
         success: true,
         message: 'Summary generated successfully',
@@ -46,14 +46,14 @@ class UploadController {
         }
       });
       
-      // ✅ THEN TRY TO SEND EMAIL IN BACKGROUND (non-blocking)
+      //  THEN TRY TO SEND EMAIL IN BACKGROUND (non-blocking)
       console.log('📧 Sending email in background...');
       emailService.sendSummary(email, narrative, file.originalname)
-        .then(() => console.log('✅ Email sent successfully'))
-        .catch(error => console.error('❌ Email failed (but summary already shown):', error.message));
+        .then(() => console.log(' Email sent successfully'))
+        .catch(error => console.error(' Email failed (but summary already shown):', error.message));
       
     } catch (error) {
-      console.error('❌ Upload error:', error);
+      console.error(' Upload error:', error);
       
       // Send error response
       res.status(500).json({
