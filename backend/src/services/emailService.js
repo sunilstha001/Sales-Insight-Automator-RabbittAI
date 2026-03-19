@@ -4,12 +4,12 @@ class EmailService {
   constructor() {
     // Initialize Resend with API key
     this.resend = new Resend(process.env.RESEND_API_KEY);
-    console.log('✅ Resend initialized');
+    console.log(' Resend initialized');
   }
 
   async sendSummary(email, summary, fileName) {
     try {
-      console.log('📧 Sending via Resend API to:', email);
+      console.log(' Sending via Resend API to:', email);
       
       const { data, error } = await this.resend.emails.send({
         from: 'no-reply@sunilshrestha.me', // Resend's test domain - works immediately!
@@ -23,7 +23,7 @@ class EmailService {
         throw error;
       }
 
-      console.log('✅ Email sent successfully via Resend!');
+      console.log(' Email sent successfully via Resend!');
       return { success: true, data };
     } catch (error) {
       console.error('❌ Email error:', error);
