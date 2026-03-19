@@ -139,6 +139,41 @@ function Home() {
       }
     })
   }
+  // Add this function in your component
+const downloadSampleData = () => {
+  const sampleData = `Date,Product_Category,Region,Units_Sold,Unit_Price,Revenue,Status
+2026-01-05,Electronics,North,150,1200,180000,Shipped
+2026-01-12,Home Appliances,South,45,450,20250,Shipped
+2026-01-20,Electronics,East,80,1100,88000,Delivered
+2026-01-25,Clothing,West,200,45,9000,Shipped
+2026-01-28,Books,North,120,25,3000,Delivered
+2026-02-02,Electronics,South,95,1150,109250,Shipped
+2026-02-08,Home Appliances,East,32,480,15360,Cancelled
+2026-02-15,Electronics,North,210,1250,262500,Delivered
+2026-02-18,Clothing,South,350,40,14000,Shipped
+2026-02-22,Books,West,200,28,5600,Shipped
+2026-02-28,Home Appliances,North,60,400,24000,Cancelled
+2026-03-03,Electronics,West,175,1180,206500,Shipped
+2026-03-07,Electronics,East,140,1220,170800,Delivered
+2026-03-10,Electronics,West,95,1150,109250,Shipped
+2026-03-15,Clothing,North,280,38,10640,Shipped
+2026-03-18,Home Appliances,South,55,420,23100,Delivered
+2026-03-22,Books,East,150,22,3300,Shipped
+2026-03-25,Electronics,South,110,1080,118800,Shipped
+2026-03-28,Clothing,East,190,42,7980,Delivered
+2026-03-31,Home Appliances,West,48,460,22080,Shipped`
+
+  const blob = new Blob([sampleData], { type: 'text/csv' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'sample-sales-data.csv'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+  toast.success('Sample data downloaded!')
+}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
@@ -326,44 +361,159 @@ function Home() {
         )}
 
         {/* Sample Data Section */}
-        <div className="mt-16 bg-blue-50/50 rounded-2xl p-8 border border-blue-100">
-          <h3 className="font-bold text-xl mb-6 text-blue-900">📊 Sample Data Format</h3>
-          <div className="overflow-x-auto rounded-xl bg-white shadow-inner">
-            <table className="min-w-full text-sm">
-              <thead className="bg-blue-100 text-blue-900">
-                <tr>
-                  <th className="px-6 py-4 text-left font-semibold">Date</th>
-                  <th className="px-6 py-4 text-left font-semibold">Product_Category</th>
-                  <th className="px-6 py-4 text-left font-semibold">Region</th>
-                  <th className="px-6 py-4 text-left font-semibold">Units_Sold</th>
-                  <th className="px-6 py-4 text-left font-semibold">Unit_Price</th>
-                  <th className="px-6 py-4 text-left font-semibold">Revenue</th>
-                  <th className="px-6 py-4 text-left font-semibold">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                <tr className="hover:bg-gray-50">
-                  <td className="px-6 py-4">2026-01-05</td>
-                  <td className="px-6 py-4">Electronics</td>
-                  <td className="px-6 py-4">North</td>
-                  <td className="px-6 py-4">150</td>
-                  <td className="px-6 py-4">1200</td>
-                  <td className="px-6 py-4">180000</td>
-                  <td className="px-6 py-4">Shipped</td>
-                </tr>
-                <tr className="hover:bg-gray-50">
-                  <td className="px-6 py-4">2026-01-12</td>
-                  <td className="px-6 py-4">Home Appliances</td>
-                  <td className="px-6 py-4">South</td>
-                  <td className="px-6 py-4">45</td>
-                  <td className="px-6 py-4">450</td>
-                  <td className="px-6 py-4">20250</td>
-                  <td className="px-6 py-4">Shipped</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        {/* Sample Data Section with Download Button */}
+<div className="mt-16 bg-blue-50/50 rounded-2xl p-8 border border-blue-100">
+  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+    <div>
+      <h3 className="font-bold text-xl text-blue-900 flex items-center">
+        <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+        </svg>
+        Sample Data Format
+      </h3>
+      <p className="text-sm text-blue-700 mt-1">Use this format for best results</p>
+    </div>
+    
+    {/* Download Button */}
+    <button
+      onClick={downloadSampleData}
+      className="flex items-center space-x-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
+    >
+      <Download className="h-4 w-4" />
+      <span className="text-sm font-medium">Download Sample CSV</span>
+    </button>
+  </div>
+  
+  {/* Data Table */}
+  <div className="overflow-x-auto rounded-xl bg-white shadow-lg border border-blue-200">
+    <table className="min-w-full text-sm">
+      <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+        <tr>
+          <th className="px-6 py-4 text-left font-semibold rounded-tl-xl">Date</th>
+          <th className="px-6 py-4 text-left font-semibold">Product_Category</th>
+          <th className="px-6 py-4 text-left font-semibold">Region</th>
+          <th className="px-6 py-4 text-left font-semibold">Units_Sold</th>
+          <th className="px-6 py-4 text-left font-semibold">Unit_Price</th>
+          <th className="px-6 py-4 text-left font-semibold">Revenue</th>
+          <th className="px-6 py-4 text-left font-semibold rounded-tr-xl">Status</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-gray-200">
+        <tr className="hover:bg-blue-50 transition-colors">
+          <td className="px-6 py-4 font-mono">2026-01-05</td>
+          <td className="px-6 py-4">Electronics</td>
+          <td className="px-6 py-4">North</td>
+          <td className="px-6 py-4 text-right">150</td>
+          <td className="px-6 py-4 text-right">1,200</td>
+          <td className="px-6 py-4 text-right font-medium">180,000</td>
+          <td className="px-6 py-4">
+            <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Shipped</span>
+          </td>
+        </tr>
+        <tr className="hover:bg-blue-50 transition-colors">
+          <td className="px-6 py-4 font-mono">2026-01-12</td>
+          <td className="px-6 py-4">Home Appliances</td>
+          <td className="px-6 py-4">South</td>
+          <td className="px-6 py-4 text-right">45</td>
+          <td className="px-6 py-4 text-right">450</td>
+          <td className="px-6 py-4 text-right font-medium">20,250</td>
+          <td className="px-6 py-4">
+            <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Shipped</span>
+          </td>
+        </tr>
+        <tr className="hover:bg-blue-50 transition-colors">
+          <td className="px-6 py-4 font-mono">2026-01-20</td>
+          <td className="px-6 py-4">Electronics</td>
+          <td className="px-6 py-4">East</td>
+          <td className="px-6 py-4 text-right">80</td>
+          <td className="px-6 py-4 text-right">1,100</td>
+          <td className="px-6 py-4 text-right font-medium">88,000</td>
+          <td className="px-6 py-4">
+            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Delivered</span>
+          </td>
+        </tr>
+        <tr className="hover:bg-blue-50 transition-colors">
+          <td className="px-6 py-4 font-mono">2026-01-25</td>
+          <td className="px-6 py-4">Clothing</td>
+          <td className="px-6 py-4">West</td>
+          <td className="px-6 py-4 text-right">200</td>
+          <td className="px-6 py-4 text-right">45</td>
+          <td className="px-6 py-4 text-right font-medium">9,000</td>
+          <td className="px-6 py-4">
+            <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Shipped</span>
+          </td>
+        </tr>
+        <tr className="hover:bg-blue-50 transition-colors">
+          <td className="px-6 py-4 font-mono">2026-01-28</td>
+          <td className="px-6 py-4">Books</td>
+          <td className="px-6 py-4">North</td>
+          <td className="px-6 py-4 text-right">120</td>
+          <td className="px-6 py-4 text-right">25</td>
+          <td className="px-6 py-4 text-right font-medium">3,000</td>
+          <td className="px-6 py-4">
+            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Delivered</span>
+          </td>
+        </tr>
+        <tr className="hover:bg-blue-50 transition-colors">
+          <td className="px-6 py-4 font-mono">2026-02-15</td>
+          <td className="px-6 py-4">Electronics</td>
+          <td className="px-6 py-4">North</td>
+          <td className="px-6 py-4 text-right">210</td>
+          <td className="px-6 py-4 text-right">1,250</td>
+          <td className="px-6 py-4 text-right font-medium">262,500</td>
+          <td className="px-6 py-4">
+            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Delivered</span>
+          </td>
+        </tr>
+        <tr className="hover:bg-blue-50 transition-colors">
+          <td className="px-6 py-4 font-mono">2026-02-28</td>
+          <td className="px-6 py-4">Home Appliances</td>
+          <td className="px-6 py-4">North</td>
+          <td className="px-6 py-4 text-right">60</td>
+          <td className="px-6 py-4 text-right">400</td>
+          <td className="px-6 py-4 text-right font-medium">24,000</td>
+          <td className="px-6 py-4">
+            <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Cancelled</span>
+          </td>
+        </tr>
+        <tr className="hover:bg-blue-50 transition-colors">
+          <td className="px-6 py-4 font-mono">2026-03-10</td>
+          <td className="px-6 py-4">Electronics</td>
+          <td className="px-6 py-4">West</td>
+          <td className="px-6 py-4 text-right">95</td>
+          <td className="px-6 py-4 text-right">1,150</td>
+          <td className="px-6 py-4 text-right font-medium">109,250</td>
+          <td className="px-6 py-4">
+            <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Shipped</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  {/* Footer with Stats and Download Hint */}
+  <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="flex items-center space-x-4 text-sm text-blue-700">
+      <span className="flex items-center">
+        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+        </svg>
+        <span><strong>20</strong> records</span>
+      </span>
+      <span className="flex items-center">
+        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span><strong>$1.39M</strong> total revenue</span>
+      </span>
+    </div>
+    
+    <div className="flex items-center space-x-2 text-sm text-blue-600 bg-blue-100 px-4 py-2 rounded-full">
+      <Sparkles className="h-4 w-4" />
+      <span>Click download button to test with this data</span>
+    </div>
+  </div>
+</div>
       </main>
 
       {/* Feature Boxes Section */}
