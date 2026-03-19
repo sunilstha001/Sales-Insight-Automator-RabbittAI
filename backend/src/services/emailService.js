@@ -12,7 +12,7 @@ class EmailService {
       console.log('📧 Sending via Resend API to:', email);
       
       const { data, error } = await this.resend.emails.send({
-        from: 'onboarding@resend.dev', // Resend's test domain - works immediately!
+        from: 'no-reply@sunilshrestha.me', // Resend's test domain - works immediately!
         to: [email],
         subject: `Sales Insight Summary - ${fileName}`,
         html: this.generateEmailTemplate(summary, fileName)
