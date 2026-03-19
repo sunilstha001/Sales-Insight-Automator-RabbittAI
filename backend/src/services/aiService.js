@@ -104,21 +104,21 @@ Please provide:
 [2-3 sentences summarizing overall performance with key numbers]
 
 **KEY INSIGHTS**
-• [Insight 1 with specific numbers]
-• [Insight 2 with specific numbers]
-• [Insight 3 with specific numbers]
+ [Insight 1 with specific numbers]
+ [Insight 2 with specific numbers]
+ [Insight 3 with specific numbers]
 
 **TOP PERFORMING**
-- Best Category: [Name] with [revenue] ([percentage]% of total)
-- Best Region: [Name] with [revenue] ([percentage]% of total)
+ Best Category: [Name] with [revenue] ([percentage]% of total)
+ Best Region: [Name] with [revenue] ([percentage]% of total)
 
 **AREAS FOR IMPROVEMENT**
-• [Area 1 with specific numbers]
-• [Area 2 with specific numbers]
+ [Area 1 with specific numbers]
+ [Area 2 with specific numbers]
 
 **ACTIONABLE RECOMMENDATIONS**
-1. [Recommendation 1 with rationale]
-2. [Recommendation 2 with rationale]
+ [Recommendation 1 with rationale]
+ [Recommendation 2 with rationale]
 
 REMEMBER: Use EXACT numbers from above.`;
   }
