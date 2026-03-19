@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
-import FileUpload from './components/FileUpload'      
-import EmailInput from './components/EmailInput'      
-import StatusMessage from './components/StatusMessage' 
-import LoadingSpinner from './components/LoadingSpinner' 
-import { Sparkles, Shield, Github, TrendingUp, Zap, MailCheck, Download, Copy, Check } from 'lucide-react'
-import axios from 'axios'
 import { Toaster, toast } from 'react-hot-toast'
+import axios from 'axios'
+
+import Navigation from './components/Navigation'
+import HeroSection from './components/HeroSection'
+import UploadForm from './components/UploadForm'
+import SummaryDisplay from './components/SummaryDisplay'
+import SampleDataSection from './components/SampleDataSection'
+import FeatureBoxes from './components/FeatureBoxes'
+import Footer from './components/Footer'
 
 function Home() {
   const [file, setFile] = useState(null)
@@ -39,23 +42,16 @@ function Home() {
     setSummary(null)
 
     try {
-      console.log('📤 Sending to:', API_URL)
-      
       const response = await axios({
         method: 'post',
         url: `${API_URL}/api/upload`,
         data: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
         timeout: 120000,
         withCredentials: false
       })
 
-      console.log(' Response:', response.data)
-
       if (response.data.success) {
-        // Store the summary
         setSummary({
           narrative: response.data.narrative || response.data.data?.narrative,
           stats: response.data.data?.summary || response.data.summary,
@@ -64,15 +60,13 @@ function Home() {
         
         setStatus({ 
           type: 'success', 
-          message: ' Summary generated successfully! Check your inbox and see below.' 
+          message: '✅ Summary generated successfully! Check your inbox and see below.' 
         })
         toast.success('Summary generated successfully!')
         setFile(null)
         setEmail('')
       }
     } catch (error) {
-      console.error(' Upload error:', error)
-      
       let errorMessage = 'Something went wrong. Please try again.'
       
       if (error.code === 'ECONNABORTED') {
@@ -85,7 +79,7 @@ function Home() {
         errorMessage = error.message
       }
       
-      setStatus({ type: 'error', message: ` ${errorMessage}` })
+      setStatus({ type: 'error', message: `❌ ${errorMessage}` })
       toast.error(errorMessage)
     } finally {
       setLoading(false)
@@ -116,32 +110,8 @@ function Home() {
     }
   }
 
-  // Function to format narrative with proper styling
-  const formatNarrative = (text) => {
-    if (!text) return null;
-    
-    return text.split('\n').map((line, index) => {
-      // Check if line is a header (starts with ** or is ALL CAPS)
-      if (line.startsWith('**') && line.endsWith('**')) {
-        return <h3 key={index} className="text-xl font-bold text-gray-900 mt-6 mb-3">{line.replace(/\*\*/g, '')}</h3>
-      }
-      // Check if line is a bullet point
-      else if (line.startsWith('•') || line.startsWith('-') || line.match(/^\d+\./)) {
-        return <li key={index} className="text-gray-700 ml-6 mb-2">{line}</li>
-      }
-      // Check if line is empty
-      else if (line.trim() === '') {
-        return <br key={index} />
-      }
-      // Regular paragraph
-      else {
-        return <p key={index} className="text-gray-700 leading-relaxed mb-4">{line}</p>
-      }
-    })
-  }
-  // Add this function in your component
-const downloadSampleData = () => {
-  const sampleData = `Date,Product_Category,Region,Units_Sold,Unit_Price,Revenue,Status
+  const downloadSampleData = () => {
+    const sampleData = `Date,Product_Category,Region,Units_Sold,Unit_Price,Revenue,Status
 2026-01-05,Electronics,North,150,1200,180000,Shipped
 2026-01-12,Home Appliances,South,45,450,20250,Shipped
 2026-01-20,Electronics,East,80,1100,88000,Delivered
@@ -163,415 +133,86 @@ const downloadSampleData = () => {
 2026-03-28,Clothing,East,190,42,7980,Delivered
 2026-03-31,Home Appliances,West,48,460,22080,Shipped`
 
-  const blob = new Blob([sampleData], { type: 'text/csv' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'sample-sales-data.csv'
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
-  toast.success('Sample data downloaded!')
-}
+    const blob = new Blob([sampleData], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'sample-sales-data.csv'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    toast.success('Sample data downloaded!')
+  }
+
+  const formatNarrative = (text) => {
+    if (!text) return null
+    
+    return text.split('\n').map((line, index) => {
+      if (line.startsWith('**') && line.endsWith('**')) {
+        return <h3 key={index} className="text-xl font-bold text-gray-900 mt-6 mb-3">
+          {line.replace(/\*\*/g, '')}
+        </h3>
+      } else if (line.startsWith('•') || line.startsWith('-') || line.match(/^\d+\./)) {
+        return <li key={index} className="text-gray-700 ml-6 mb-2">{line}</li>
+      } else if (line.trim() === '') {
+        return <br key={index} />
+      } else {
+        return <p key={index} className="text-gray-700 leading-relaxed mb-4">{line}</p>
+      }
+    })
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <Toaster 
         position="top-right"
         toastOptions={{
           duration: 4000,
-          style: {
-            background: '#363636',
-            color: '#fff',
-            padding: '16px',
-            borderRadius: '8px',
-            fontSize: '14px',
-          },
-          success: {
-            style: {
-              background: '#10b981',
-            },
-          },
-          error: {
-            style: {
-              background: '#ef4444',
-            },
-          },
+          style: { background: '#363636', color: '#fff', padding: '16px', borderRadius: '8px' },
+          success: { style: { background: '#10b981' } },
+          error: { style: { background: '#ef4444' } },
         }}
       />
 
-      {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg">
-                <Sparkles className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  Rabbit AI
-                </span>
-                <span className="ml-2 text-sm text-gray-500 hidden sm:inline">Sales Insight Automator</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <a 
-                href={`${API_URL}/api-docs`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all duration-200"
-              >
-                <Shield className="h-4 w-4" />
-                <span className="text-sm font-medium hidden sm:inline">API Docs</span>
-              </a>
-              <a 
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all duration-200"
-              >
-                <Github className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
+      <Navigation apiUrl={API_URL} />
+      
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            Transform Sales Data into
-            <span className="block bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Actionable Insights
-            </span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Upload your sales file, and let our AI generate a professional executive summary 
-            delivered straight to your inbox in seconds.
-          </p>
-        </div>
-
-        {/* Upload Form */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-gray-100">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">Generate Your Insight</h2>
-            <p className="text-gray-600 mt-2">Fill in the details below to get started</p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <FileUpload file={file} setFile={setFile} />
-            <EmailInput email={email} setEmail={setEmail} />
-            
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-red-500 bg-[length:200%_200%] animate-gradient text-white py-5 px-6 rounded-xl font-semibold text-lg
-                       hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200
-                       disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
-                       focus:ring-4 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none"
-            >
-              {loading ? (
-                <div className="flex items-center justify-center space-x-3">
-                  <LoadingSpinner />
-                  <span>Processing Your File...</span>
-                </div>
-              ) : (
-                'Generate & Send Summary'
-              )}
-            </button>
-          </form>
-
-          {status.message && <StatusMessage status={status} />}
-        </div>
-
-        {/*  SUMMARY DISPLAY SECTION */}
-        {summary && (
-          <div className="mt-12 bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-gray-100">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <Sparkles className="h-6 w-6 text-purple-600 mr-2" />
-                  AI-Generated Summary
-                </h2>
-                <p className="text-gray-600 mt-1">File: {summary.fileName}</p>
-              </div>
-              <div className="flex space-x-3">
-                <button
-                  onClick={copyToClipboard}
-                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition"
-                >
-                  {copied ? <Check className="h-5 w-5 text-green-600" /> : <Copy className="h-5 w-5 text-gray-600" />}
-                  <span className="text-sm font-medium text-gray-700">{copied ? 'Copied!' : 'Copy'}</span>
-                </button>
-                <button
-                  onClick={downloadSummary}
-                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition"
-                >
-                  <Download className="h-5 w-5 text-gray-600" />
-                  <span className="text-sm font-medium text-gray-700">Download</span>
-                </button>
-              </div>
-            </div>
-            
-            {/* Stats Cards */}
-            {summary.stats && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div className="bg-purple-50 rounded-xl p-4">
-                  <p className="text-sm text-purple-600 font-medium">Total Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    ${summary.stats.totalRevenue?.toLocaleString() || 'N/A'}
-                  </p>
-                </div>
-                <div className="bg-pink-50 rounded-xl p-4">
-                  <p className="text-sm text-pink-600 font-medium">Total Units</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {summary.stats.totalUnits?.toLocaleString() || 'N/A'}
-                  </p>
-                </div>
-                <div className="bg-blue-50 rounded-xl p-4">
-                  <p className="text-sm text-blue-600 font-medium">Total Orders</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {summary.stats.totalOrders || 'N/A'}
-                  </p>
-                </div>
-                <div className="bg-green-50 rounded-xl p-4">
-                  <p className="text-sm text-green-600 font-medium">Avg Order Value</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    ${summary.stats.avgOrderValue?.toLocaleString() || 'N/A'}
-                  </p>
-                </div>
-              </div>
-            )}
-            
-            {/* Summary Narrative with formatting */}
-            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
-              <div className="prose max-w-none">
-                {formatNarrative(summary.narrative)}
-              </div>
-            </div>
-            
-            <p className="text-sm text-gray-500 mt-4 text-center">
-              This summary has also been sent to {email}
-            </p>
+        <HeroSection />
+        
+        <UploadForm
+          file={file}
+          setFile={setFile}
+          email={email}
+          setEmail={setEmail}
+          loading={loading}
+          handleSubmit={handleSubmit}
+        />
+        
+        {status.message && (
+          <div className={`mt-4 p-4 rounded-xl ${
+            status.type === 'success' ? 'bg-green-50 text-green-800' : 
+            status.type === 'error' ? 'bg-red-50 text-red-800' : 
+            'bg-blue-50 text-blue-800'
+          }`}>
+            {status.message}
           </div>
         )}
 
-        {/* Sample Data Section */}
-        {/* Sample Data Section with Download Button */}
-<div className="mt-16 bg-blue-50/50 rounded-2xl p-8 border border-blue-100">
-  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-    <div>
-      <h3 className="font-bold text-xl text-blue-900 flex items-center">
-        <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
-        </svg>
-        Sample Data Format
-      </h3>
-      <p className="text-sm text-blue-700 mt-1">Use this format for best results</p>
-    </div>
-    
-    {/* Download Button */}
-    <button
-      onClick={downloadSampleData}
-      className="flex items-center space-x-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
-    >
-      <Download className="h-4 w-4" />
-      <span className="text-sm font-medium">Download Sample CSV</span>
-    </button>
-  </div>
-  
-  {/* Data Table */}
-  <div className="overflow-x-auto rounded-xl bg-white shadow-lg border border-blue-200">
-    <table className="min-w-full text-sm">
-      <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-        <tr>
-          <th className="px-6 py-4 text-left font-semibold rounded-tl-xl">Date</th>
-          <th className="px-6 py-4 text-left font-semibold">Product_Category</th>
-          <th className="px-6 py-4 text-left font-semibold">Region</th>
-          <th className="px-6 py-4 text-left font-semibold">Units_Sold</th>
-          <th className="px-6 py-4 text-left font-semibold">Unit_Price</th>
-          <th className="px-6 py-4 text-left font-semibold">Revenue</th>
-          <th className="px-6 py-4 text-left font-semibold rounded-tr-xl">Status</th>
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-gray-200">
-        <tr className="hover:bg-blue-50 transition-colors">
-          <td className="px-6 py-4 font-mono">2026-01-05</td>
-          <td className="px-6 py-4">Electronics</td>
-          <td className="px-6 py-4">North</td>
-          <td className="px-6 py-4 text-right">150</td>
-          <td className="px-6 py-4 text-right">1,200</td>
-          <td className="px-6 py-4 text-right font-medium">180,000</td>
-          <td className="px-6 py-4">
-            <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Shipped</span>
-          </td>
-        </tr>
-        <tr className="hover:bg-blue-50 transition-colors">
-          <td className="px-6 py-4 font-mono">2026-01-12</td>
-          <td className="px-6 py-4">Home Appliances</td>
-          <td className="px-6 py-4">South</td>
-          <td className="px-6 py-4 text-right">45</td>
-          <td className="px-6 py-4 text-right">450</td>
-          <td className="px-6 py-4 text-right font-medium">20,250</td>
-          <td className="px-6 py-4">
-            <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Shipped</span>
-          </td>
-        </tr>
-        <tr className="hover:bg-blue-50 transition-colors">
-          <td className="px-6 py-4 font-mono">2026-01-20</td>
-          <td className="px-6 py-4">Electronics</td>
-          <td className="px-6 py-4">East</td>
-          <td className="px-6 py-4 text-right">80</td>
-          <td className="px-6 py-4 text-right">1,100</td>
-          <td className="px-6 py-4 text-right font-medium">88,000</td>
-          <td className="px-6 py-4">
-            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Delivered</span>
-          </td>
-        </tr>
-        <tr className="hover:bg-blue-50 transition-colors">
-          <td className="px-6 py-4 font-mono">2026-01-25</td>
-          <td className="px-6 py-4">Clothing</td>
-          <td className="px-6 py-4">West</td>
-          <td className="px-6 py-4 text-right">200</td>
-          <td className="px-6 py-4 text-right">45</td>
-          <td className="px-6 py-4 text-right font-medium">9,000</td>
-          <td className="px-6 py-4">
-            <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Shipped</span>
-          </td>
-        </tr>
-        <tr className="hover:bg-blue-50 transition-colors">
-          <td className="px-6 py-4 font-mono">2026-01-28</td>
-          <td className="px-6 py-4">Books</td>
-          <td className="px-6 py-4">North</td>
-          <td className="px-6 py-4 text-right">120</td>
-          <td className="px-6 py-4 text-right">25</td>
-          <td className="px-6 py-4 text-right font-medium">3,000</td>
-          <td className="px-6 py-4">
-            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Delivered</span>
-          </td>
-        </tr>
-        <tr className="hover:bg-blue-50 transition-colors">
-          <td className="px-6 py-4 font-mono">2026-02-15</td>
-          <td className="px-6 py-4">Electronics</td>
-          <td className="px-6 py-4">North</td>
-          <td className="px-6 py-4 text-right">210</td>
-          <td className="px-6 py-4 text-right">1,250</td>
-          <td className="px-6 py-4 text-right font-medium">262,500</td>
-          <td className="px-6 py-4">
-            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Delivered</span>
-          </td>
-        </tr>
-        <tr className="hover:bg-blue-50 transition-colors">
-          <td className="px-6 py-4 font-mono">2026-02-28</td>
-          <td className="px-6 py-4">Home Appliances</td>
-          <td className="px-6 py-4">North</td>
-          <td className="px-6 py-4 text-right">60</td>
-          <td className="px-6 py-4 text-right">400</td>
-          <td className="px-6 py-4 text-right font-medium">24,000</td>
-          <td className="px-6 py-4">
-            <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Cancelled</span>
-          </td>
-        </tr>
-        <tr className="hover:bg-blue-50 transition-colors">
-          <td className="px-6 py-4 font-mono">2026-03-10</td>
-          <td className="px-6 py-4">Electronics</td>
-          <td className="px-6 py-4">West</td>
-          <td className="px-6 py-4 text-right">95</td>
-          <td className="px-6 py-4 text-right">1,150</td>
-          <td className="px-6 py-4 text-right font-medium">109,250</td>
-          <td className="px-6 py-4">
-            <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Shipped</span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-  {/* Footer with Stats and Download Hint */}
-  <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-    <div className="flex items-center space-x-4 text-sm text-blue-700">
-      <span className="flex items-center">
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-        </svg>
-        <span><strong>20</strong> records</span>
-      </span>
-      <span className="flex items-center">
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <span><strong>$1.39M</strong> total revenue</span>
-      </span>
-    </div>
-    
-    <div className="flex items-center space-x-2 text-sm text-blue-600 bg-blue-100 px-4 py-2 rounded-full">
-      <Sparkles className="h-4 w-4" />
-      <span>Click download button to test with this data</span>
-    </div>
-  </div>
-</div>
+        <SummaryDisplay
+          summary={summary}
+          email={email}
+          copied={copied}
+          onCopy={copyToClipboard}
+          onDownload={downloadSummary}
+          formatNarrative={formatNarrative}
+        />
+
+        <SampleDataSection onDownloadSample={downloadSampleData} />
       </main>
 
-      {/* Feature Boxes Section */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Our Platform</h2>
-          <p className="text-xl text-gray-600">Powerful features designed for sales teams</p>
-        </div>
-        
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-50 rounded-2xl flex items-center justify-center mb-6">
-              <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Smart Analysis</h3>
-            <p className="text-gray-600 leading-relaxed">
-              AI-powered insights that identify trends, patterns, and key opportunities.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-            <div className="w-16 h-16 bg-gradient-to-br from-pink-100 to-pink-50 rounded-2xl flex items-center justify-center mb-6">
-              <svg className="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Instant Delivery</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Get professional summaries sent directly to your inbox within seconds.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-            <div className="w-16 h-16 bg-gradient-to-br from-red-100 to-red-50 rounded-2xl flex items-center justify-center mb-6">
-              <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Executive Ready</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Well-formatted summaries ready to present to leadership teams.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <footer className="bg-white border-t mt-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-gray-500 text-sm">
-              © 2024 Rabbit AI. All rights reserved. | AI Cloud DevOps Engineer Challenge
-            </p>
-          </div>
-        </div>
-      </footer>
+      <FeatureBoxes />
+      <Footer />
     </div>
   )
 }
